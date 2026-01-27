@@ -198,9 +198,18 @@ def view_proposal_html(request: Request, voice_log_id: int, db: Session = Depend
     # Convert MD to HTML
     proposal_html_content = markdown.markdown(proposal_md)
     
-    return templates.TemplateResponse("proposal.html", {
-        "request": request,
-        "voice_id": log.elevenlabs_voice_id,
-        "date": datetime.now().strftime("%B %d, %Y"),
-        "proposal_html": proposal_html_content
-    })
+@router.post("/generate")
+def generate_proposal_stateless(data: VoiceLogRead, request: Request):
+    # Note: Using VoiceLogRead as schema but ignoring ID/created_at if passing raw JSON
+    # Or better, define a request body inline or reuse
+    # We'll use the generator logic
+    proposal_text = generator.generate(data.transcript, data.elevenlabs_voice_id)
+    proposal_html = markdown.markdown(proposal_text)
+    
+    # We can return JSON with the content
+    return {
+        "voice_id": data.elevenlabs_voice_id,
+        "proposal_text": proposal_text,
+        "proposal_html": proposal_html,
+        "preview_url": None # No persistent URL if no DB
+    }
