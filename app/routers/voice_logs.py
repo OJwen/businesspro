@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -7,6 +7,7 @@ from typing import List, Dict, Optional
 from ..database import get_db
 from ..models import VoiceLog
 from ..schemas import VoiceLogRead
+from ..pdf_generator import generate_pdf
 import re
 from datetime import datetime
 import markdown
@@ -225,3 +226,28 @@ def generate_proposal_stateless(data: ProposalRequest, request: Request):
         "client_email": data.client_email,
         "client_main_problem": data.client_main_problem
     }
+
+@router.post("/generate/pdf")
+def generate_proposal_pdf_stateless(data: ProposalRequest, request: Request):
+    # 1. Generate text
+    proposal_text = generator.generate(data.transcript, data.elevenlabs_voice_id)
+    
+    # 2. Prepare context for PDF
+    context = {
+        "voice_id": data.elevenlabs_voice_id,
+        "date": datetime.now().strftime("%B %d, %Y"),
+        "proposal_markdown": proposal_text,
+        # Can add other fields if we want to show them on PDF
+    }
+    
+    # 3. Generate PDF
+    pdf_buffer = generate_pdf(context)
+    
+    # 4. Return as stream
+    filename = f"Proposal_{data.client_name or 'Client'}.pdf"
+    
+    return StreamingResponse(
+        pdf_buffer, 
+        media_type="application/pdf", 
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )

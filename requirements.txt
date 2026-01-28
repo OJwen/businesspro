@@ -7,3 +7,4 @@ requests
 aiofiles
 jinja2
 markdown
+reportlab
