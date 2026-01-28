@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
-from typing import List, Dict
+from typing import List, Dict, Optional
 from ..database import get_db
 from ..models import VoiceLog
 from ..schemas import VoiceLogRead
@@ -202,6 +203,10 @@ def view_proposal_html(request: Request, voice_log_id: int, db: Session = Depend
 class ProposalRequest(BaseModel):
     transcript: str
     elevenlabs_voice_id: str = "default"
+    client_name: Optional[str] = None
+    client_number: Optional[str] = None
+    client_email: Optional[str] = None
+    client_main_problem: Optional[str] = None
 
 @router.post("/generate")
 def generate_proposal_stateless(data: ProposalRequest, request: Request):
@@ -214,5 +219,9 @@ def generate_proposal_stateless(data: ProposalRequest, request: Request):
         "voice_id": data.elevenlabs_voice_id,
         "proposal_text": proposal_text,
         "proposal_html": proposal_html,
-        "preview_url": None # No persistent URL if no DB
+        "preview_url": None, # No persistent URL if no DB
+        "client_name": data.client_name,
+        "client_number": data.client_number,
+        "client_email": data.client_email,
+        "client_main_problem": data.client_main_problem
     }
