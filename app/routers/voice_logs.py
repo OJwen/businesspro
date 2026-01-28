@@ -190,22 +190,17 @@ def generate_proposal(voice_log_id: int, db: Session = Depends(get_db)):
     proposal_text = generator.generate(log.transcript, log.elevenlabs_voice_id)
     return {"id": log.id, "voice_id": log.elevenlabs_voice_id, "proposal": proposal_text}
 
-@router.get("/{voice_log_id}/proposal/html", response_class=HTMLResponse)
-def view_proposal_html(request: Request, voice_log_id: int, db: Session = Depends(get_db)):
-    log = db.query(VoiceLog).filter(VoiceLog.id == voice_log_id).first()
+@router.get("/proposal/{uuid}", response_class=HTMLResponse)
+def view_proposal_html(request: Request, uuid: str, db: Session = Depends(get_db)):
+    log = db.query(VoiceLog).filter(VoiceLog.uuid == uuid).first()
     if not log:
-        raise HTTPException(status_code=404, detail="Voice log not found")
+        raise HTTPException(status_code=404, detail="Proposal not found")
     
     proposal_md = generator.generate(log.transcript, log.elevenlabs_voice_id)
     
-    # 3. Prepare context (using saved client_name)
-    now = log.created_at # Use original creation date? Or now? Let's use now for freshness or created_at for history.
-    # Actually user wants to see the proposal they generated.
-    # If the proposal is generated on the fly from transcript, it's consistent.
-    
     context = {
         "client_name": log.client_name or "Valued Client",
-        "date": datetime.now().strftime("%B %d, %Y"), # Dynamic date
+        "date": datetime.now().strftime("%B %d, %Y"),
         "date_year": datetime.now().strftime("%Y"),
         "proposal_html": markdown.markdown(proposal_md)
     }
@@ -238,17 +233,18 @@ def generate_proposal_stateless(data: ProposalRequest, request: Request, db: Ses
     proposal_text = generator.generate(data.transcript, data.elevenlabs_voice_id)
     proposal_html = markdown.markdown(proposal_text)
     
-    # 3. Generate Link
+    # 3. Generate Secure Link using UUID
     # Force HTTPS for Render
     base_url = str(request.base_url).replace("http://", "https://")
     # If localhost, keep http
     if "localhost" in base_url or "127.0.0.1" in base_url:
         base_url = str(request.base_url)
         
-    preview_url = f"{base_url}api/v1/voice_logs/{new_log.id}/proposal/html"
+    preview_url = f"{base_url}api/v1/voice_logs/proposal/{new_log.uuid}"
 
     return {
         "id": new_log.id,
+        "uuid": new_log.uuid,
         "voice_id": data.elevenlabs_voice_id,
         "proposal_text": proposal_text,
         "proposal_html": proposal_html,
