@@ -197,8 +197,20 @@ def view_proposal_html(request: Request, voice_log_id: int, db: Session = Depend
         raise HTTPException(status_code=404, detail="Voice log not found")
     
     proposal_md = generator.generate(log.transcript, log.elevenlabs_voice_id)
-    # Convert MD to HTML
-    proposal_html_content = markdown.markdown(proposal_md)
+    
+    # 3. Prepare context (using saved client_name)
+    now = log.created_at # Use original creation date? Or now? Let's use now for freshness or created_at for history.
+    # Actually user wants to see the proposal they generated.
+    # If the proposal is generated on the fly from transcript, it's consistent.
+    
+    context = {
+        "client_name": log.client_name or "Valued Client",
+        "date": datetime.now().strftime("%B %d, %Y"), # Dynamic date
+        "date_year": datetime.now().strftime("%Y"),
+        "proposal_html": markdown.markdown(proposal_md)
+    }
+    
+    return templates.TemplateResponse("proposal_preview.html", {"request": request, "context": context})
     
 
 class ProposalRequest(BaseModel):
@@ -210,17 +222,37 @@ class ProposalRequest(BaseModel):
     client_main_problem: Optional[str] = None
 
 @router.post("/generate")
-def generate_proposal_stateless(data: ProposalRequest, request: Request):
-    # Note: Using ProposalRequest for simplified input
+def generate_proposal_stateless(data: ProposalRequest, request: Request, db: Session = Depends(get_db)):
+    # 1. Save to Database to create a persistent ID
+    new_log = VoiceLog(
+        elevenlabs_voice_id=data.elevenlabs_voice_id,
+        transcript=data.transcript,
+        client_name=data.client_name,
+        audio_url="" # No audio URL allowed/needed for text-only gen?
+    )
+    db.add(new_log)
+    db.commit()
+    db.refresh(new_log)
+
+    # 2. Generate content
     proposal_text = generator.generate(data.transcript, data.elevenlabs_voice_id)
     proposal_html = markdown.markdown(proposal_text)
     
-    # We can return JSON with the content
+    # 3. Generate Link
+    # Force HTTPS for Render
+    base_url = str(request.base_url).replace("http://", "https://")
+    # If localhost, keep http
+    if "localhost" in base_url or "127.0.0.1" in base_url:
+        base_url = str(request.base_url)
+        
+    preview_url = f"{base_url}api/v1/voice_logs/{new_log.id}/proposal/html"
+
     return {
+        "id": new_log.id,
         "voice_id": data.elevenlabs_voice_id,
         "proposal_text": proposal_text,
         "proposal_html": proposal_html,
-        "preview_url": None, # No persistent URL if no DB
+        "preview_url": preview_url, 
         "client_name": data.client_name,
         "client_number": data.client_number,
         "client_email": data.client_email,

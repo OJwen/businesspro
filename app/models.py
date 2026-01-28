@@ -9,4 +9,5 @@ class VoiceLog(Base):
     elevenlabs_voice_id = Column(String, index=True)
     transcript = Column(Text)
     audio_url = Column(String)
+    client_name = Column(String, default="Client")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
