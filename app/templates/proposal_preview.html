@@ -6,14 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Business Proposal - {{ context.client_name }}</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
 
         :root {
             --primary: #4a6fa5;
-            --accent: #3d5a8c;
+            --primary-dark: #3d5a8c;
             --text-dark: #2d3748;
             --text-light: #ffffff;
-            --bg-light: #f7fafc;
         }
 
         * {
@@ -23,34 +22,31 @@
         }
 
         body {
-            margin: 0;
             font-family: 'Inter', -apple-system, sans-serif;
-            color: var(--text-dark);
             background-color: #e2e8f0;
         }
 
         .page {
-            max-width: 210mm;
-            min-height: 297mm;
+            width: 210mm;
+            height: 297mm;
             margin: 20px auto;
             background: white;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
             position: relative;
             overflow: hidden;
+            page-break-after: always;
         }
 
-        /* ========== COVER PAGE ========== */
-        .cover-page {
-            background-color: var(--primary);
-            color: var(--text-light);
-            height: 297mm;
+        /* ========== PAGE 1: COVER ========== */
+        .page-cover {
+            background: var(--primary);
+            color: white;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            position: relative;
         }
 
-        .geo-accent-top {
+        .cover-accent {
             position: absolute;
             top: 0;
             right: 0;
@@ -58,250 +54,693 @@
             height: 0;
             border-style: solid;
             border-width: 0 150mm 150mm 0;
-            border-color: transparent var(--accent) transparent transparent;
-            z-index: 1;
+            border-color: transparent var(--primary-dark) transparent transparent;
         }
 
-        .cover-content {
-            padding: 40mm 20mm;
+        .cover-header {
+            padding: 30mm 25mm 0;
+            position: relative;
             z-index: 2;
         }
 
-        .brand-name {
-            font-size: 13px;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-            font-weight: 700;
+        .cover-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15mm;
         }
 
-        h1.title {
-            font-size: 64px;
-            font-weight: 700;
-            line-height: 1.1;
-            margin-top: 50mm;
-            margin-bottom: 20px;
+        .logo-box {
+            width: 12mm;
+            height: 12mm;
+            background: white;
         }
 
-        .subtitle {
+        .logo-text {
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .cover-date {
+            position: absolute;
+            top: 30mm;
+            right: 25mm;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .cover-title {
+            font-size: 72px;
+            font-weight: 800;
+            line-height: 0.95;
+            margin-top: 40mm;
+            letter-spacing: -1px;
+        }
+
+        .cover-subtitle {
             font-size: 16px;
+            margin-top: 15mm;
             opacity: 0.95;
             font-weight: 400;
-            letter-spacing: 0.5px;
         }
 
         .cover-footer {
-            padding: 20mm;
+            padding: 25mm;
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
+            position: relative;
             z-index: 2;
         }
 
-        .info-block label {
-            display: block;
+        .cover-info label {
             font-size: 9px;
             font-weight: 700;
             letter-spacing: 1.5px;
-            margin-bottom: 5px;
             opacity: 0.8;
+            display: block;
+            margin-bottom: 5px;
         }
 
-        .info-block .val {
+        .cover-info .value {
             font-size: 12px;
             font-weight: 400;
         }
 
-        .year-big {
-            font-size: 48px;
-            font-weight: 700;
-            opacity: 0.9;
-        }
-
-        .date-small {
-            font-size: 11px;
+        .cover-year {
+            font-size: 56px;
+            font-weight: 800;
             text-align: right;
-            margin-top: 5px;
-            opacity: 0.8;
         }
 
-        /* ========== CONTENT PAGE ========== */
-        .content-page {
-            position: relative;
-            min-height: 297mm;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Header with diagonal blue accent */
-        .content-header {
-            position: relative;
-            height: 45mm;
+        /* ========== PAGE 2: ABOUT US ========== */
+        .page-about {
             background: white;
-            flex-shrink: 0;
         }
 
-        .diagonal-blue {
+        .about-header {
+            position: relative;
+            height: 50mm;
+        }
+
+        .about-diagonal {
             position: absolute;
             top: 0;
             right: 0;
             width: 0;
             height: 0;
             border-style: solid;
-            border-width: 0 90mm 45mm 0;
+            border-width: 0 100mm 50mm 0;
             border-color: transparent var(--primary) transparent transparent;
         }
 
-        .header-logo {
+        .about-logo {
             position: absolute;
-            top: 15mm;
-            left: 20mm;
+            top: 18mm;
+            left: 25mm;
             display: flex;
             align-items: center;
             gap: 8px;
             z-index: 2;
         }
 
-        .logo-icon {
+        .about-logo .logo-box {
             width: 10mm;
             height: 10mm;
             background: var(--primary);
         }
 
-        .logo-text {
+        .about-logo .logo-text {
             font-size: 10px;
             font-weight: 700;
-            line-height: 1.3;
             color: var(--text-dark);
+            line-height: 1.3;
         }
 
-        .header-date {
+        .about-date {
             position: absolute;
-            top: 15mm;
-            right: 30mm;
-            font-size: 9px;
+            top: 18mm;
+            right: 35mm;
+            font-size: 10px;
             color: white;
             font-weight: 500;
             z-index: 2;
         }
 
-        /* Main content area */
-        .content-main {
-            flex: 1;
-            padding: 0 20mm 60mm 20mm;
-            position: relative;
+        .about-content {
+            padding: 0 25mm 25mm;
         }
 
-        .content-main h1 {
+        .about-title {
+            font-size: 42px;
+            font-weight: 800;
             color: var(--primary);
-            font-size: 32px;
-            text-transform: uppercase;
-            font-weight: 700;
-            margin: 20mm 0 15mm 0;
-            letter-spacing: 1px;
+            margin-bottom: 20mm;
+            letter-spacing: -0.5px;
         }
 
-        .content-main h2 {
-            font-size: 15px;
-            font-weight: 700;
+        .about-text {
+            font-size: 11px;
+            line-height: 1.8;
             color: var(--text-dark);
-            background: white;
-            padding: 10px 12px;
-            margin: 20px 0 12px 0;
-            border-left: 3px solid var(--primary);
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15mm;
         }
 
-        .content-main h3 {
+        .about-box {
+            background: var(--primary);
+            color: white;
+            padding: 12px 18px;
+            display: inline-block;
+            font-weight: 700;
             font-size: 13px;
-            font-weight: 600;
-            color: var(--primary);
-            margin: 15px 0 8px 0;
+            margin-bottom: 10mm;
+            letter-spacing: 0.5px;
         }
 
-        .content-main p {
-            line-height: 1.7;
-            font-size: 12px;
-            margin-bottom: 10px;
-            color: var(--text-dark);
-        }
-
-        .content-main ul,
-        .content-main ol {
-            padding-left: 25px;
-            margin-bottom: 15px;
-        }
-
-        .content-main li {
-            line-height: 1.7;
-            font-size: 12px;
-            margin-bottom: 6px;
-        }
-
-        .content-main strong {
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        /* Footer */
-        .content-footer {
+        .about-images {
             position: absolute;
-            bottom: 15mm;
-            left: 20mm;
-            right: 20mm;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            right: 25mm;
+            bottom: 25mm;
+            width: 80mm;
         }
 
-        .footer-url {
+        .about-img {
+            width: 100%;
+            height: 55mm;
+            background: #cbd5e0;
+            margin-bottom: 8mm;
+        }
+
+        .about-footer {
+            position: absolute;
+            bottom: 18mm;
+            left: 25mm;
             font-size: 9px;
             color: var(--text-dark);
-            font-weight: 500;
         }
 
-        .page-number-box {
+        .about-page-num {
+            position: absolute;
+            bottom: 18mm;
+            right: 25mm;
             background: var(--primary);
             color: white;
             padding: 6px 12px;
             font-weight: 700;
-            font-size: 12px;
-            min-width: 30px;
-            text-align: center;
-        }
-
-        /* Team Grid */
-        .team-section {
-            margin-top: 30px;
-        }
-
-        .team-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-top: 15px;
-        }
-
-        .team-card {
-            background: white;
-            padding: 12px;
-            border-top: 3px solid var(--primary);
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .team-card h3 {
             font-size: 13px;
+        }
+
+        /* ========== PAGE 3: WHAT WE DO ========== */
+        .page-services {
+            background: white;
+        }
+
+        .services-left {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 90mm;
+            height: 100%;
+            background: var(--primary);
+            color: white;
+            padding: 30mm 25mm;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .services-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            opacity: 0.15;
+        }
+
+        .services-logo {
+            position: absolute;
+            top: 25mm;
+            left: 25mm;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 2;
+        }
+
+        .services-logo .logo-box {
+            width: 10mm;
+            height: 10mm;
+            background: white;
+        }
+
+        .services-logo .logo-text {
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .services-date {
+            position: absolute;
+            top: 25mm;
+            right: 25mm;
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .services-title {
+            font-size: 52px;
+            font-weight: 800;
+            line-height: 1;
+            position: relative;
+            z-index: 2;
+        }
+
+        .services-right {
+            position: absolute;
+            left: 90mm;
+            top: 0;
+            right: 0;
+            height: 100%;
+            padding: 45mm 25mm 30mm;
+        }
+
+        .services-intro {
+            font-size: 11px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 20mm;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12mm;
+        }
+
+        .service-card {
+            background: var(--primary);
+            color: white;
+            padding: 12px 15px;
+            font-weight: 700;
+            font-size: 12px;
+            text-align: center;
+            letter-spacing: 0.3px;
+        }
+
+        .services-footer {
+            position: absolute;
+            bottom: 18mm;
+            left: 25mm;
+            font-size: 9px;
+            color: white;
+            z-index: 2;
+        }
+
+        .services-page-num {
+            position: absolute;
+            bottom: 18mm;
+            right: 25mm;
+            background: var(--primary);
+            color: white;
+            padding: 6px 12px;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        /* ========== PAGE 4: OUR TEAM ========== */
+        .page-team {
+            background: white;
+        }
+
+        .team-header {
+            position: relative;
+            height: 50mm;
+        }
+
+        .team-diagonal {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 100mm 50mm 0;
+            border-color: transparent var(--primary) transparent transparent;
+        }
+
+        .team-logo {
+            position: absolute;
+            top: 18mm;
+            left: 25mm;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 2;
+        }
+
+        .team-logo .logo-box {
+            width: 10mm;
+            height: 10mm;
+            background: var(--primary);
+        }
+
+        .team-logo .logo-text {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.3;
+        }
+
+        .team-tagline {
+            position: absolute;
+            top: 18mm;
+            right: 30mm;
+            text-align: right;
+            z-index: 2;
+        }
+
+        .team-tagline div:first-child {
+            font-size: 11px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 0.5px;
+        }
+
+        .team-tagline div:last-child {
+            font-size: 10px;
+            font-weight: 600;
+            color: white;
+            margin-top: 2px;
+        }
+
+        .team-content {
+            padding: 0 25mm 25mm;
+        }
+
+        .team-title {
+            font-size: 42px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 20mm;
+            letter-spacing: -0.5px;
+        }
+
+        .team-member {
+            display: flex;
+            gap: 15mm;
+            margin-bottom: 12mm;
+        }
+
+        .team-photo {
+            width: 50mm;
+            height: 50mm;
+            background: #cbd5e0;
+            flex-shrink: 0;
+        }
+
+        .team-info {
+            flex: 1;
+            background: white;
+            padding: 12px 15px;
+            border-bottom: 3px solid var(--primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .team-name {
+            font-size: 14px;
             font-weight: 700;
             color: var(--primary);
-            margin: 0 0 3px 0;
+            margin-bottom: 3px;
         }
 
-        .team-card p {
-            font-size: 10px;
+        .team-role {
+            font-size: 11px;
             color: #718096;
-            margin: 0;
+            margin-bottom: 8px;
         }
 
-        /* Print styles */
+        .team-desc {
+            font-size: 10px;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        .team-footer {
+            position: absolute;
+            bottom: 18mm;
+            left: 25mm;
+            font-size: 9px;
+            color: var(--text-dark);
+        }
+
+        .team-page-num {
+            position: absolute;
+            bottom: 18mm;
+            right: 25mm;
+            background: var(--primary);
+            color: white;
+            padding: 6px 12px;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        /* ========== PAGE 5: WHY CHOOSE US ========== */
+        .page-why {
+            background: white;
+        }
+
+        .why-header {
+            position: relative;
+            height: 50mm;
+            background: var(--primary);
+        }
+
+        .why-header-accent {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 50mm 0 0 100mm;
+            border-color: transparent transparent transparent white;
+        }
+
+        .why-logo {
+            position: absolute;
+            top: 18mm;
+            left: 25mm;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 2;
+        }
+
+        .why-logo .logo-box {
+            width: 10mm;
+            height: 10mm;
+            background: white;
+        }
+
+        .why-logo .logo-text {
+            font-size: 10px;
+            font-weight: 700;
+            color: white;
+            line-height: 1.3;
+        }
+
+        .why-date {
+            position: absolute;
+            top: 18mm;
+            right: 25mm;
+            font-size: 10px;
+            color: white;
+            font-weight: 500;
+            z-index: 2;
+        }
+
+        .why-left {
+            position: absolute;
+            left: 25mm;
+            top: 70mm;
+            width: 70mm;
+        }
+
+        .why-left-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15mm;
+        }
+
+        .why-left-logo .logo-box {
+            width: 12mm;
+            height: 12mm;
+            background: var(--primary);
+        }
+
+        .why-left-logo .logo-text {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.3;
+        }
+
+        .why-main-title {
+            font-size: 52px;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+            margin-bottom: 8mm;
+        }
+
+        .why-right {
+            position: absolute;
+            left: 105mm;
+            top: 70mm;
+            right: 25mm;
+        }
+
+        .why-box {
+            background: white;
+            margin-bottom: 10mm;
+        }
+
+        .why-box-title {
+            background: white;
+            color: var(--text-dark);
+            padding: 10px 15px;
+            font-weight: 700;
+            font-size: 13px;
+            border-left: 3px solid var(--primary);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            margin-bottom: 8px;
+        }
+
+        .why-box-content {
+            background: var(--primary);
+            color: white;
+            padding: 12px 15px;
+            font-size: 10px;
+            line-height: 1.7;
+        }
+
+        .why-footer {
+            position: absolute;
+            bottom: 18mm;
+            left: 25mm;
+            font-size: 9px;
+            color: var(--text-dark);
+        }
+
+        .why-page-num {
+            position: absolute;
+            bottom: 18mm;
+            right: 25mm;
+            background: var(--primary);
+            color: white;
+            padding: 6px 12px;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        /* ========== PAGE 6: BACK COVER ========== */
+        .page-back {
+            background: var(--primary);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .back-accent {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 150mm 150mm 0;
+            border-color: transparent var(--primary-dark) transparent transparent;
+        }
+
+        .back-header {
+            padding: 30mm 25mm 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .back-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15mm;
+        }
+
+        .back-logo .logo-box {
+            width: 12mm;
+            height: 12mm;
+            background: white;
+        }
+
+        .back-logo .logo-text {
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .back-date {
+            position: absolute;
+            top: 30mm;
+            right: 25mm;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .back-title {
+            font-size: 56px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-top: 30mm;
+        }
+
+        .back-year {
+            font-size: 48px;
+            font-weight: 800;
+            margin-top: 5mm;
+        }
+
+        .back-contact {
+            padding: 0 25mm 25mm;
+            position: relative;
+            z-index: 2;
+        }
+
+        .back-contact-title {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 15mm;
+        }
+
+        .back-contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10mm;
+            font-size: 13px;
+        }
+
+        .back-contact-icon {
+            width: 8mm;
+            height: 8mm;
+            background: white;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
         @media print {
             body {
                 background: white;
@@ -312,7 +751,6 @@
                 margin: 0;
                 width: 100%;
                 box-shadow: none;
-                page-break-after: always;
             }
         }
     </style>
@@ -320,78 +758,222 @@
 
 <body>
 
-    <!-- ========== COVER PAGE ========== -->
-    <div class="page cover-page">
-        <div class="geo-accent-top"></div>
-
-        <div class="cover-content">
-            <div class="brand-name">ANTIGRAVITY <span style="font-weight: 300">AGENCY</span></div>
-            <h1 class="title">BUSINESS<br>PROPOSAL</h1>
-            <div class="subtitle">Custom Solutions for Sustainable Success</div>
+    <!-- ========== PAGE 1: COVER ========== -->
+    <div class="page page-cover">
+        <div class="cover-accent"></div>
+        <div class="cover-header">
+            <div class="cover-logo">
+                <div class="logo-box"></div>
+                <div class="logo-text">ANTIGRAVITY<br>AGENCY</div>
+            </div>
+            <div class="cover-date">{{ context.date }}</div>
         </div>
-
+        <div>
+            <div style="padding: 0 25mm; position: relative; z-index: 2;">
+                <div class="cover-title">BUSINESS<br>PROPOSAL<br>{{ context.date_year }}</div>
+                <div class="cover-subtitle">CUSTOM SOLUTIONS FOR SUSTAINABLE SUCCESS</div>
+            </div>
+        </div>
         <div class="cover-footer">
             <div>
-                <div class="info-block">
+                <div class="cover-info">
                     <label>PRESENTED BY</label>
-                    <div class="val">Antigravity Team</div>
+                    <div class="value">Antigravity Team</div>
                 </div>
-                <div class="info-block" style="margin-top: 15px;">
+                <div class="cover-info" style="margin-top: 15mm;">
                     <label>PREPARED FOR</label>
-                    <div class="val">{{ context.client_name }}</div>
+                    <div class="value">{{ context.client_name }}</div>
                 </div>
             </div>
-            <div>
-                <div class="year-big">{{ context.date_year }}</div>
-                <div class="date-small">{{ context.date }}</div>
-            </div>
+            <div class="cover-year">{{ context.date_year }}</div>
         </div>
     </div>
 
-    <!-- ========== CONTENT PAGE ========== -->
-    <div class="page content-page">
-        <!-- Header with diagonal accent -->
-        <div class="content-header">
-            <div class="diagonal-blue"></div>
-            <div class="header-logo">
-                <div class="logo-icon"></div>
-                <div class="logo-text">
-                    ANTIGRAVITY<br>
-                    <span style="font-weight: 400">AGENCY</span>
-                </div>
+    <!-- ========== PAGE 2: ABOUT US ========== -->
+    <div class="page page-about">
+        <div class="about-header">
+            <div class="about-diagonal"></div>
+            <div class="about-logo">
+                <div class="logo-box"></div>
+                <div class="logo-text">ANTIGRAVITY<br>AGENCY</div>
             </div>
-            <div class="header-date">{{ context.date }}</div>
+            <div class="about-date">{{ context.date }}</div>
         </div>
-
-        <!-- Main content -->
-        <div class="content-main">
-            {{ context.proposal_html | safe }}
-
-            <div class="team-section">
-                <h1>Our Team</h1>
-                <p>Meet the experts dedicated to your success.</p>
-
-                <div class="team-grid">
-                    <div class="team-card">
-                        <h3>Sebastian Bennet</h3>
-                        <p>CEO</p>
-                    </div>
-                    <div class="team-card">
-                        <h3>Hannah Morales</h3>
-                        <p>Project Manager</p>
-                    </div>
-                    <div class="team-card">
-                        <h3>Juliana Silva</h3>
-                        <p>Marketing</p>
-                    </div>
-                </div>
+        <div class="about-content">
+            <div class="about-title">ABOUT US</div>
+            <div class="about-text">
+                We are a forward-thinking agency dedicated to transforming businesses through innovative solutions. Our
+                team combines deep industry expertise with cutting-edge technology to deliver results that exceed
+                expectations. With a proven track record of success, we partner with clients to navigate complex
+                challenges and unlock new opportunities for growth.
+            </div>
+            <div class="about-box">OUR VISION</div>
+            <div class="about-text">
+                To be the leading catalyst for business transformation, empowering organizations to thrive in an
+                ever-evolving marketplace through strategic innovation and unwavering commitment to excellence.
+            </div>
+            <div class="about-box">OUR MISSION</div>
+            <div class="about-text">
+                We deliver tailored solutions that drive measurable impact, combining strategic thinking with hands-on
+                execution to help our clients achieve sustainable competitive advantage.
             </div>
         </div>
+        <div class="about-images">
+            <div class="about-img"></div>
+            <div class="about-img"></div>
+        </div>
+        <div class="about-footer">www.antigravity.com</div>
+        <div class="about-page-num">02</div>
+    </div>
 
-        <!-- Footer -->
-        <div class="content-footer">
-            <div class="footer-url">www.antigravity.com</div>
-            <div class="page-number-box">02</div>
+    <!-- ========== PAGE 3: WHAT WE DO ========== -->
+    <div class="page page-services">
+        <div class="services-left">
+            <div class="services-bg"></div>
+            <div class="services-logo">
+                <div class="logo-box"></div>
+                <div class="logo-text">ANTIGRAVITY<br>AGENCY</div>
+            </div>
+            <div class="services-date">{{ context.date }}</div>
+            <div class="services-title">WHAT<br>WE DO</div>
+            <div class="services-footer">www.antigravity.com</div>
+        </div>
+        <div class="services-right">
+            <div class="services-intro">
+                Our comprehensive suite of services is designed to address every aspect of your business needs. From
+                strategic planning to hands-on implementation, we provide end-to-end solutions that drive real results
+                and create lasting value for your organization.
+            </div>
+            <div class="services-grid">
+                <div class="service-card">BUSINESS ANALYSIS</div>
+                <div class="service-card">BUSINESS PLANNER</div>
+                <div class="service-card">DIGITAL MARKETING</div>
+                <div class="service-card">MARKET ANALYSIS</div>
+            </div>
+        </div>
+        <div class="services-page-num">03</div>
+    </div>
+
+    <!-- ========== PAGE 4: OUR TEAM ========== -->
+    <div class="page page-team">
+        <div class="team-header">
+            <div class="team-diagonal"></div>
+            <div class="team-logo">
+                <div class="logo-box"></div>
+                <div class="logo-text">ANTIGRAVITY<br>AGENCY</div>
+            </div>
+            <div class="team-tagline">
+                <div>YOUR VISION,</div>
+                <div>OUR EXPERTISE</div>
+            </div>
+        </div>
+        <div class="team-content">
+            <div class="team-title">OUR TEAM</div>
+            <div class="team-member">
+                <div class="team-photo"></div>
+                <div class="team-info">
+                    <div class="team-name">SEBASTIAN BENNET</div>
+                    <div class="team-role">CEO</div>
+                    <div class="team-desc">Strategic leader with 15+ years driving digital transformation. Expert in
+                        scaling businesses and building high-performance teams that deliver exceptional results.</div>
+                </div>
+            </div>
+            <div class="team-member">
+                <div class="team-photo"></div>
+                <div class="team-info">
+                    <div class="team-name">HANNAH MORALES</div>
+                    <div class="team-role">Project Manager</div>
+                    <div class="team-desc">Certified PMP with expertise in agile methodologies. Specializes in complex
+                        project delivery and stakeholder management across diverse industries.</div>
+                </div>
+            </div>
+            <div class="team-member">
+                <div class="team-photo"></div>
+                <div class="team-info">
+                    <div class="team-name">JULIANA SILVA</div>
+                    <div class="team-role">Marketing</div>
+                    <div class="team-desc">Data-driven marketing strategist focused on ROI. Creates compelling campaigns
+                        that resonate with audiences and drive measurable business growth.</div>
+                </div>
+            </div>
+        </div>
+        <div class="team-footer">www.antigravity.com</div>
+        <div class="team-page-num">04</div>
+    </div>
+
+    <!-- ========== PAGE 5: WHY CHOOSE US ========== -->
+    <div class="page page-why">
+        <div class="why-header">
+            <div class="why-header-accent"></div>
+            <div class="why-logo">
+                <div class="logo-box"></div>
+                <div class="logo-text">ANTIGRAVITY<br>AGENCY</div>
+            </div>
+            <div class="why-date">{{ context.date }}</div>
+        </div>
+        <div class="why-left">
+            <div class="why-left-logo">
+                <div class="logo-box"></div>
+                <div class="logo-text">ANTIGRAVITY<br>AGENCY</div>
+            </div>
+            <div class="why-main-title">WHY<br>CHOOSE<br>US</div>
+        </div>
+        <div class="why-right">
+            <div class="why-box">
+                <div class="why-box-title">PLAN FOR SUCCESS</div>
+                <div class="why-box-content">We develop comprehensive strategies tailored to your unique business
+                    objectives, ensuring every initiative aligns with your long-term vision.</div>
+            </div>
+            <div class="why-box">
+                <div class="why-box-title">ATTENTION TO DETAILS</div>
+                <div class="why-box-content">Our meticulous approach ensures nothing is overlooked. We sweat the small
+                    stuff so you can focus on the big picture.</div>
+            </div>
+            <div class="why-box">
+                <div class="why-box-title">AWARD-WINNING</div>
+                <div class="why-box-content">Recognized industry leaders with multiple accolades for innovation and
+                    client satisfaction. Our track record speaks for itself.</div>
+            </div>
+            <div class="why-box">
+                <div class="why-box-title">MEETING DEADLINES</div>
+                <div class="why-box-content">We respect your time and commitments. Our proven project management ensures
+                    on-time delivery without compromising quality.</div>
+            </div>
+        </div>
+        <div class="why-footer">www.antigravity.com</div>
+        <div class="why-page-num">05</div>
+    </div>
+
+    <!-- ========== PAGE 6: BACK COVER ========== -->
+    <div class="page page-back">
+        <div class="back-accent"></div>
+        <div class="back-header">
+            <div class="back-logo">
+                <div class="logo-box"></div>
+                <div class="logo-text">ANTIGRAVITY<br>AGENCY</div>
+            </div>
+            <div class="back-date">{{ context.date }}</div>
+            <div class="back-title">BUSINESS<br>PROPOSAL</div>
+            <div class="back-year">{{ context.date_year }}</div>
+        </div>
+        <div class="back-contact">
+            <div class="back-contact-title">CONTACT US</div>
+            <div class="back-contact-item">
+                <div class="back-contact-icon"></div>
+                <div>+123-456-7890</div>
+            </div>
+            <div class="back-contact-item">
+                <div class="back-contact-icon"></div>
+                <div>hello@antigravity.com</div>
+            </div>
+            <div class="back-contact-item">
+                <div class="back-contact-icon"></div>
+                <div>@antigravity</div>
+            </div>
+            <div class="back-contact-item">
+                <div class="back-contact-icon"></div>
+                <div>www.antigravity.com</div>
+            </div>
         </div>
     </div>
 
