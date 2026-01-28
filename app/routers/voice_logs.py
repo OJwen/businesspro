@@ -251,3 +251,22 @@ def generate_proposal_pdf_stateless(data: ProposalRequest, request: Request):
         media_type="application/pdf", 
         headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
+
+@router.post("/generate/html", response_class=HTMLResponse)
+def generate_proposal_html_stateless(data: ProposalRequest, request: Request):
+    # 1. Generate text
+    proposal_text = generator.generate(data.transcript, data.elevenlabs_voice_id)
+    
+    # 2. Convert to HTML fragment for embedding
+    proposal_content_html = markdown.markdown(proposal_text)
+    
+    # 3. Prepare context
+    now = datetime.now()
+    context = {
+        "client_name": data.client_name or "Valued Client",
+        "date": now.strftime("%B %d, %Y"),
+        "date_year": now.strftime("%Y"),
+        "proposal_html": proposal_content_html
+    }
+    
+    return templates.TemplateResponse("proposal_preview.html", {"request": request, "context": context})
